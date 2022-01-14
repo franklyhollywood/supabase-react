@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
+import Avatar from './Avatar';
 
 export default function Account({ session }) {
 	const [loading, setLoading] = useState(true);
@@ -66,48 +67,62 @@ export default function Account({ session }) {
 	}
 
 	return (
-		<div className='form-widget'>
-			<div>
-				<label htmlFor='email'>Email</label>
-				<input id='email' type='text' value={session.user.email} disabled />
-			</div>
-			<div>
-				<label htmlFor='username'>Name</label>
-				<input
-					id='username'
-					type='text'
-					value={username || ''}
-					onChange={(e) => setUsername(e.target.value)}
+		<>
+			<div className='form-widget'>
+				{/* Add to the body */}
+				<Avatar
+					url={avatar_url}
+					size={150}
+					onUpload={(url) => {
+						setAvatarUrl(url);
+						updateProfile({ username, website, avatar_url: url });
+					}}
 				/>
+				{/* ... */}
 			</div>
-			<div>
-				<label htmlFor='website'>Website</label>
-				<input
-					id='website'
-					type='website'
-					value={website || ''}
-					onChange={(e) => setWebsite(e.target.value)}
-				/>
-			</div>
+			<div className='form-widget'>
+				<div>
+					<label htmlFor='email'>Email</label>
+					<input id='email' type='text' value={session.user.email} disabled />
+				</div>
+				<div>
+					<label htmlFor='username'>Name</label>
+					<input
+						id='username'
+						type='text'
+						value={username || ''}
+						onChange={(e) => setUsername(e.target.value)}
+					/>
+				</div>
+				<div>
+					<label htmlFor='website'>Website</label>
+					<input
+						id='website'
+						type='website'
+						value={website || ''}
+						onChange={(e) => setWebsite(e.target.value)}
+					/>
+				</div>
 
-			<div>
-				<button
-					className='button block primary'
-					onClick={() => updateProfile({ username, website, avatar_url })}
-					disabled={loading}
-				>
-					{loading ? 'Loading ...' : 'Update'}
-				</button>
-			</div>
+				<div>
+					<button
+						className='button block primary'
+						onClick={() => updateProfile({ username, website, avatar_url })}
+						disabled={loading}
+					>
+						{loading ? 'Loading ...' : 'Update'}
+					</button>
+				</div>
 
-			<div>
-				<button
-					className='button block'
-					onClick={() => supabase.auth.signOut()}
-				>
-					Sign Out
-				</button>
+				<div>
+					<button
+						className='button block'
+						onClick={() => supabase.auth.signOut()}
+					>
+						Sign Out
+					</button>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }
